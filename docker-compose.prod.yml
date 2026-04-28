@@ -5,6 +5,8 @@
 services:
   postgres:
     image: postgres:16-alpine
+    networks:
+      - codex-network
     environment:
       POSTGRES_USER: codex_lb
       POSTGRES_PASSWORD: codex_lb
@@ -22,6 +24,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - codex-network
     environment:
       CODEX_LB_DATABASE_URL: ${CODEX_LB_DATABASE_URL:-postgresql+asyncpg://codex_lb:codex_lb@postgres:5432/codex_lb}
     depends_on:
@@ -51,3 +55,7 @@ volumes:
     name: codex-lb-data
   codex-lb-postgres-data:
     name: codex-lb-postgres-data
+
+networks:
+  codex-network:
+    external: true
