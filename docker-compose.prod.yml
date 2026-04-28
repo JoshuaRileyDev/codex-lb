@@ -22,10 +22,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env.local
     environment:
-      CODEX_LB_DATABASE_URL: postgresql+asyncpg://codex_lb:codex_lb@postgres:5432/codex_lb
+      CODEX_LB_DATABASE_URL: ${CODEX_LB_DATABASE_URL:-postgresql+asyncpg://codex_lb:codex_lb@postgres:5432/codex_lb}
     depends_on:
       postgres:
         condition: service_healthy
