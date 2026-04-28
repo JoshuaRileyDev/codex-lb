@@ -58,4 +58,4 @@ volumes:
 
 networks:
   codex-network:
-    external: true
+    driver: bridge
