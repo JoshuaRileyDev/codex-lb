@@ -295,6 +295,33 @@ def test_chat_tools_are_normalized():
     assert "function" not in first_tool
 
 
+def test_chat_custom_thread_action_tool_is_normalized_as_function():
+    payload = {
+        "model": "gpt-5.2",
+        "messages": [{"role": "user", "content": "hi"}],
+        "tools": [
+            {
+                "type": "create_thread",
+                "function": {
+                    "name": "create_thread",
+                    "description": "Create a new thread",
+                    "parameters": {"type": "object", "properties": {}},
+                },
+            }
+        ],
+    }
+    req = ChatCompletionsRequest.model_validate(payload)
+    responses = req.to_responses_request()
+    dumped = responses.to_payload()
+
+    tools = dumped.get("tools")
+    assert isinstance(tools, list)
+    first_tool = cast(Mapping[str, JsonValue], tools[0])
+    assert first_tool.get("type") == "function"
+    assert first_tool.get("name") == "create_thread"
+    assert "function" not in first_tool
+
+
 def test_chat_tool_choice_object_passes_through():
     payload = {
         "model": "gpt-5.2",
@@ -306,6 +333,20 @@ def test_chat_tool_choice_object_passes_through():
     dumped = responses.to_payload()
     tool_choice = dumped.get("tool_choice")
     assert tool_choice == {"type": "function", "name": "do_thing"}
+
+
+def test_chat_custom_thread_action_tool_choice_is_normalized_as_function():
+    payload = {
+        "model": "gpt-5.2",
+        "messages": [{"role": "user", "content": "hi"}],
+        "tool_choice": {"type": "create_thread", "function": {"name": "create_thread"}},
+    }
+    req = ChatCompletionsRequest.model_validate(payload)
+    responses = req.to_responses_request()
+    dumped = responses.to_payload()
+
+    tool_choice = dumped.get("tool_choice")
+    assert tool_choice == {"type": "function", "name": "create_thread"}
 
 
 def test_chat_response_format_json_object_maps_to_text_format():

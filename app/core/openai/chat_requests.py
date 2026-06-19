@@ -191,7 +191,7 @@ def _normalize_chat_tools(tools: list[JsonValue]) -> list[JsonValue]:
                 continue
             normalized.append(
                 {
-                    "type": tool_type or "function",
+                    "type": "function",
                     "name": name,
                     "description": function.get("description"),
                     "parameters": function.get("parameters"),
@@ -224,7 +224,7 @@ def _normalize_tool_choice(tool_choice: JsonValue | None) -> JsonValue | None:
     if isinstance(function, dict):
         name = function.get("name")
         if isinstance(name, str) and name:
-            return {"type": tool_type or "function", "name": name}
+            return {"type": "function", "name": name}
     return tool_choice
 
 

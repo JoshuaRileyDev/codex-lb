@@ -1,0 +1,4 @@
+- [x] 1. Update Chat Completions tool normalization so function-style tools are emitted as standard `function` tools even when the incoming tool type is a thread action name.
+- [x] 2. Normalize function-style `tool_choice` objects to the standard `function` shape for the same thread action cases.
+- [x] 3. Add focused tests for a custom thread action tool and matching tool choice.
+- [x] 4. Verify the targeted tests pass.
